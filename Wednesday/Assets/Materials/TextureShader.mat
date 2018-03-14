@@ -73,8 +73,8 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UScale: 1
-    - _USpeed: 1
-    - _UVScale: 4
+    - _USpeed: 2
+    - _UVScale: 1
     - _UVSec: 0
     - _VScale: 1
     - _VSpeed: 1
