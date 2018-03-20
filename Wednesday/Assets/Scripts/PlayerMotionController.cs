@@ -1,59 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerMotionController : MonoBehaviour {
 
     public float _movementMultiplier,
         _jumpInitialVelocity;
-    private float _jumpVelocity = 0f;
-    private bool _onGround = true;
+    public float _gravity = 9.81f;
+    private Vector3 _movementVector;
     private CharacterController _characterController;
 
-	// Use this for initialization
-	void Start () {
+    void Start() {
         _characterController = GetComponent<CharacterController>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        float xMovement = Input.GetAxis("Horizontal");
-        float zMovement = Input.GetAxis("Vertical");
-        Vector3 movementVector3 = new Vector3(xMovement, -9.81f, zMovement);
+        _movementVector = Vector3.zero;
+    }
 
-        if (_characterController.isGrounded && _jumpVelocity == 0f)
+    void Update() {
+        if (_characterController.isGrounded) // The player shouldn't be able to change it's direction while jumping.
         {
+            _movementVector = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            _movementVector *= Time.deltaTime * _movementMultiplier;
+
             if (Input.GetKey(KeyCode.Space))
-            {
-                _jumpVelocity = _jumpInitialVelocity;
-            }
-        }
-
-        if (_jumpVelocity > 0f)
+                _movementVector.y += _jumpInitialVelocity;
+        } else
         {
-            _jumpVelocity -= Time.deltaTime * 4f;
-            _jumpVelocity = Mathf.Clamp(_jumpVelocity, 0f, _jumpInitialVelocity);
-            movementVector3.y += _jumpVelocity;
+            _movementVector.y -= _gravity * Time.deltaTime;
         }
 
-        Move(movementVector3);
+        _characterController.Move(_movementVector * Time.deltaTime * _movementMultiplier);
 
-        Vector3 lookRotation = movementVector3;
+        Vector3 lookRotation = _movementVector;
         lookRotation.y = 0f;
 
-        if (lookRotation.x != 0 || lookRotation.z != 0) {
-            //Quaternion.Slerp();
-            transform.rotation = Quaternion.LookRotation(lookRotation);
-        }
-    }
-
-    private void Move(Vector3 movement)
-    {
-        _characterController.Move(movement * Time.deltaTime * _movementMultiplier);
-    }
-
-    private void Gravity()
-    {
-
+        if (lookRotation.x != 0 || lookRotation.z != 0)
+            transform.rotation = Quaternion.LookRotation(lookRotation * Time.deltaTime);
     }
 }

@@ -1,20 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MinimapCamera : MonoBehaviour {
 
     public GameObject _player;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+    public float _cameraHeight;
 	
-	// Update is called once per frame
 	void Update () {
         Vector3 playerPosition = _player.transform.position;
-        playerPosition.y = 17.5f;
+        playerPosition.y = _cameraHeight;
         transform.position = playerPosition;
     }
 }
